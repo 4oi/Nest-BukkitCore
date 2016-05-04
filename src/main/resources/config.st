@@ -1,0 +1,1 @@
+log "NEST has been loaded successfully!"

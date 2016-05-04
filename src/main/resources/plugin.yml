@@ -1,0 +1,7 @@
+name: Nest
+# Actual name is Nest
+author: toyblocks
+version: ${project.version}
+description: ${project.description}
+
+main: jp.llv.nest.NestPlugin
