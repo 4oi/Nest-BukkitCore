@@ -19,12 +19,14 @@ package jp.llv.nest;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jp.llv.nest.command.SyncCommandExecutor;
 import jp.llv.nest.command.exceptions.CommandException;
 import jp.llv.nest.command.exceptions.InternalException;
 import jp.llv.nest.command.obj.NestObject;
 import jp.llv.nest.command.obj.bukkit.BukkitCommandSender;
 import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.command.obj.bukkit.BukkitPlayer;
+import jp.llv.nest.command.token.CommandTokenizer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -38,8 +40,8 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
     
     private final NestPlugin plugin;
 
-    public NestAPIBukkitImpl(NestPlugin plugin, boolean async) {
-        super(async);
+    public NestAPIBukkitImpl(NestPlugin plugin) {
+        super(new CommandTokenizer(), new SyncCommandExecutor());
         this.plugin = plugin;
     }
     

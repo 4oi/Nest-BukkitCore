@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -29,6 +28,10 @@ import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.listener.ChatListener;
 import jp.llv.nest.listener.CommandListener;
 import jp.llv.nest.listener.ConsoleListener;
+import jp.llv.nest.module.DependencyException;
+import jp.llv.nest.module.InvalidModuleException;
+import jp.llv.nest.module.ModuleManager;
+import jp.llv.nest.module.SimpleModuleManager;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,29 +43,23 @@ public class NestPlugin extends JavaPlugin {
 
     private String prefix = "/n:";
     private NestAPIBukkitImpl api;
+    private ModuleManager modules;
     private boolean debug = true;
 
     @Override
     public void onEnable() {
-        this.api = new NestAPIBukkitImpl(this, false);
+        this.api = new NestAPIBukkitImpl(this);
 
         this.saveDefaultConfig();
         Configuration config = this.getConfig();
         this.prefix = config.getString("prefix", this.prefix);
-        config.getStringList("defaults").stream().forEach(defCmdClass -> {
-            try {
-                Class<?> clazz = Class.forName(defCmdClass);
-                Object cmd;
-                try {
-                    cmd = clazz.newInstance();
-                } catch (IllegalAccessException | InstantiationException ex) {
-                    cmd = clazz.getConstructor(NestAPI.class).newInstance(this.getAPI());
-                }
-                this.getAPI().registerFunc(cmd);
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | RuntimeException ex) {
-                this.getLogger().log(Level.WARNING, "Failed to load default command '" + defCmdClass + "'", ex);
-            }
-        });
+        
+        this.modules = new SimpleModuleManager(this.api);
+        try {
+            this.modules.load(this.getDataFolder().listFiles());
+        } catch (IOException | InvalidModuleException | DependencyException ex) {
+            this.getLogger().log(Level.WARNING, "Failed to load modules", ex);
+        }
 
         this.saveResource("config.st", false);
         try (BufferedReader br = new BufferedReader(new FileReader(new File(this.getDataFolder(), "config.st")))) {

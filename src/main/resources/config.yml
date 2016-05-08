@@ -3,8 +3,3 @@
 # ':' to use nest command with ':command'
 
 prefix: '/n:'
-
-defaults:
-  - 'jp.llv.nest.command.defaults.Basic'
-  - 'jp.llv.nest.command.defaults.Debug'
-  - 'jp.llv.nest.command.defaults.Math'
