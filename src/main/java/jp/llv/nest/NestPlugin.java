@@ -32,6 +32,7 @@ import jp.llv.nest.module.DependencyException;
 import jp.llv.nest.module.InvalidModuleException;
 import jp.llv.nest.module.ModuleManager;
 import jp.llv.nest.module.SimpleModuleManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -55,6 +56,10 @@ public class NestPlugin extends JavaPlugin {
         this.prefix = config.getString("prefix", this.prefix);
         
         this.modules = new SimpleModuleManager(this.api);
+        this.modules.setDependable(this.api);
+        this.modules.setDependable(Bukkit.getServer());
+        this.modules.setDependable(this);
+        
         try {
             this.modules.load(this.getDataFolder().listFiles());
         } catch (IOException | InvalidModuleException | DependencyException ex) {
