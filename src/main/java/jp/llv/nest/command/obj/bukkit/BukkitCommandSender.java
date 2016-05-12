@@ -33,5 +33,10 @@ public class BukkitCommandSender<E extends CommandSender> extends NestCommandSen
     public void sendMessage(String name) {
         super.value.sendMessage(name);
     }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return super.value.hasPermission(permission);
+    }
     
 }
