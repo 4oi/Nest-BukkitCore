@@ -67,7 +67,7 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
         }
         try {
             NestObject<?> res = this.executeNow(s, command);
-            sender.sendMessage(ChatColor.GRAY+"-> "+Objects.toString(res));
+            sender.sendMessage(ChatColor.GRAY+"-> "+(res==null? "nil" : res.toString()));
         } catch(CommandException ex) {
             sender.sendMessage(ChatColor.RED+ex.getMessage());
             if (this.plugin.isDebugMode() || ex instanceof InternalException) {
