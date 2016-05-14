@@ -16,6 +16,8 @@
  */
 package jp.llv.nest.command.obj.bukkit;
 
+import jp.llv.nest.command.exceptions.TypeMismatchException;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -23,9 +25,21 @@ import org.bukkit.entity.Player;
  * @author toyblocks
  */
 public class BukkitPlayer extends BukkitCommandSender<Player> {
-    
+
     public BukkitPlayer(Player sender) {
         super(sender);
     }
-    
+
+    public BukkitPlayer(String name) throws TypeMismatchException {
+        this(getPlayer(name));
+    }
+
+    private static Player getPlayer(String name) throws TypeMismatchException {
+        Player p = Bukkit.getPlayerExact(name);
+        if (p == null) {
+            throw new TypeMismatchException("Unknown player");
+        }
+        return p;
+    }
+
 }
