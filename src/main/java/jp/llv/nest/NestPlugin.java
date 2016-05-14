@@ -18,8 +18,10 @@ package jp.llv.nest;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -54,12 +56,12 @@ public class NestPlugin extends JavaPlugin {
         this.saveDefaultConfig();
         Configuration config = this.getConfig();
         this.prefix = config.getString("prefix", this.prefix);
-        
+
         this.modules = new SimpleModuleManager(this.api);
         this.modules.setDependable(this.api);
         this.modules.setDependable(Bukkit.getServer());
         this.modules.setDependable(this);
-        
+
         try {
             this.modules.load(this.getDataFolder().listFiles());
         } catch (IOException | InvalidModuleException | DependencyException ex) {
@@ -67,7 +69,10 @@ public class NestPlugin extends JavaPlugin {
         }
 
         this.saveResource("config.st", false);
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(this.getDataFolder(), "config.st")))) {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(new File(this.getDataFolder(), "config.st")), "UTF-8"
+                ))) {
             this.api.execute(BukkitConsole.getInstance(), br.lines().collect(Collectors.joining("\n")))
                     .get();
         } catch (IOException ex) {
@@ -75,7 +80,7 @@ public class NestPlugin extends JavaPlugin {
         } catch (CommandException | InterruptedException | ExecutionException ex) {
             this.getLogger().log(Level.WARNING, "Failed to execute initialize command file", ex);
         }
-        
+
         if (prefix.startsWith("/")) {
             this.getServer().getPluginManager().registerEvents(new CommandListener(this, prefix), this);
             this.getServer().getPluginManager().registerEvents(new ConsoleListener(this, prefix.substring(1, this.prefix.length() - 1)), this);
@@ -93,7 +98,7 @@ public class NestPlugin extends JavaPlugin {
     public NestAPIBukkit getAPI() {
         return this.api;
     }
-    
+
     public boolean isDebugMode() {
         return this.debug;
     }
