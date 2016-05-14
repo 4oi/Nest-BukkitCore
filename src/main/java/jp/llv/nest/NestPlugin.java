@@ -19,7 +19,6 @@ package jp.llv.nest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +35,7 @@ import jp.llv.nest.module.ModuleManager;
 import jp.llv.nest.module.SimpleModuleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -62,13 +62,35 @@ public class NestPlugin extends JavaPlugin {
         this.modules.setDependable(Bukkit.getServer());
         this.modules.setDependable(this);
 
+        this.saveResource("config.st", false);
+        
+        this.getServer().getScheduler().runTaskLater(this, this::init, 1L);
+    }
+
+    @Override
+    public void onDisable() {
+        this.api = null;
+    }
+
+    public NestAPIBukkit getAPI() {
+        return this.api;
+    }
+
+    public boolean isDebugMode() {
+        return this.debug;
+    }
+    
+    public void init() {
+        for (Plugin plugin : this.getServer().getPluginManager().getPlugins()) {
+            this.modules.setDependable(plugin);
+        }
+        
         try {
             this.modules.load(this.getDataFolder().listFiles());
         } catch (IOException | InvalidModuleException | DependencyException ex) {
             this.getLogger().log(Level.WARNING, "Failed to load modules", ex);
         }
-
-        this.saveResource("config.st", false);
+        
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(new File(this.getDataFolder(), "config.st")), "UTF-8"
@@ -88,19 +110,6 @@ public class NestPlugin extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new ChatListener(this, prefix), this);
             this.getServer().getPluginManager().registerEvents(new ConsoleListener(this, prefix), this);
         }
-    }
-
-    @Override
-    public void onDisable() {
-        this.api = null;
-    }
-
-    public NestAPIBukkit getAPI() {
-        return this.api;
-    }
-
-    public boolean isDebugMode() {
-        return this.debug;
     }
 
 }
