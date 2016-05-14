@@ -84,6 +84,9 @@ public class NestPlugin extends JavaPlugin {
         for (Plugin plugin : this.getServer().getPluginManager().getPlugins()) {
             this.modules.setDependable(plugin);
         }
+        for (Class<?> serviceClass : this.getServer().getServicesManager().getKnownServices()) {
+            this.modules.setDependable(this.getServer().getServicesManager().getRegistration(serviceClass).getProvider());
+        }
         
         try {
             this.modules.load(this.getDataFolder().listFiles());
