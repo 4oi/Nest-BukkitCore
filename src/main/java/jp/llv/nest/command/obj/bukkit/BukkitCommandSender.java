@@ -25,6 +25,8 @@ import org.bukkit.command.CommandSender;
  */
 public class BukkitCommandSender<E extends CommandSender> extends NestCommandSender<E> {
 
+    public static String PERM_PREFIX = "nest.";
+    
     public BukkitCommandSender(E sender) {
         super(sender);
     }
@@ -36,7 +38,7 @@ public class BukkitCommandSender<E extends CommandSender> extends NestCommandSen
 
     @Override
     public boolean hasPermission(String permission) {
-        return super.value.hasPermission(permission);
+        return super.value.hasPermission(PERM_PREFIX+permission);
     }
     
 }
