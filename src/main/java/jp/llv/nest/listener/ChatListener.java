@@ -36,7 +36,7 @@ public class ChatListener implements Listener {
         this.prefix = prefix;
     }
     
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void on(AsyncPlayerChatEvent eve) {
         if (eve.getMessage().startsWith(prefix)) {
             this.plugin.getAPI().executeNow(eve.getPlayer(), eve.getMessage().replaceFirst(prefix, ""));
