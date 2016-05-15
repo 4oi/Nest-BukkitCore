@@ -49,6 +49,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>toybox-repo</id>
+            <url>http://repo.llv.jp/content/repositories/releases/</url>
+        </repository>
     </repositories>
 
     <!-- Dependencies -->
