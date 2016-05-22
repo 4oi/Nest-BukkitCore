@@ -16,8 +16,10 @@
  */
 package jp.llv.nest.command.obj.bukkit;
 
+import java.util.Optional;
 import jp.llv.nest.command.exceptions.TypeMismatchException;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -40,6 +42,11 @@ public class BukkitPlayer extends BukkitCommandSender<Player> {
             throw new TypeMismatchException("Unknown player");
         }
         return p;
+    }
+
+    @Override
+    public Optional<Location> getLocation() {
+        return Optional.of(super.value.getLocation());
     }
 
 }

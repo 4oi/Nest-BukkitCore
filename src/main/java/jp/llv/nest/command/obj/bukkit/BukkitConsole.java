@@ -16,7 +16,9 @@
  */
 package jp.llv.nest.command.obj.bukkit;
 
+import java.util.Optional;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.ConsoleCommandSender;
 
 /**
@@ -36,6 +38,11 @@ public class BukkitConsole extends BukkitCommandSender<ConsoleCommandSender> {
             instance = new BukkitConsole();
         }
         return instance;
+    }
+
+    @Override
+    public Optional<Location> getLocation() {
+        return Optional.empty();
     }
     
 }

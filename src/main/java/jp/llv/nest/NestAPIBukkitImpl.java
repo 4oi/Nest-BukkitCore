@@ -16,7 +16,6 @@
  */
 package jp.llv.nest;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jp.llv.nest.command.SyncCommandExecutor;
@@ -63,7 +62,7 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
         } else if (sender instanceof ConsoleCommandSender) {
             s = BukkitConsole.getInstance();
         } else {
-            s = new BukkitCommandSender<>(sender);
+            throw new IllegalArgumentException("Unsupported sender type");
         }
         try {
             NestObject<?> res = this.executeNow(s, command);

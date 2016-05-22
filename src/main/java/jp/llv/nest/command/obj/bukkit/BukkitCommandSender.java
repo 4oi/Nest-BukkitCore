@@ -16,14 +16,16 @@
  */
 package jp.llv.nest.command.obj.bukkit;
 
+import java.util.Optional;
 import jp.llv.nest.command.obj.NestCommandSender;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author toyblocks
  */
-public class BukkitCommandSender<E extends CommandSender> extends NestCommandSender<E> {
+public abstract class BukkitCommandSender<E extends CommandSender> extends NestCommandSender<E> {
 
     public static String PERM_PREFIX = "nest.";
     
@@ -40,5 +42,11 @@ public class BukkitCommandSender<E extends CommandSender> extends NestCommandSen
     public boolean hasPermission(String permission) {
         return super.value.hasPermission(PERM_PREFIX+permission);
     }
+    
+    public String getName() {
+        return super.value.getName();
+    }
+    
+    public abstract Optional<Location> getLocation();
     
 }
