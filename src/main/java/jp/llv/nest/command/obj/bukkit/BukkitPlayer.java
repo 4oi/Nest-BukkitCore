@@ -54,4 +54,9 @@ public class BukkitPlayer extends BukkitCommandSender<Player> {
         return Optional.of(super.value.getLocation());
     }
 
+    @Override
+    public String toString() {
+        return this.getName();
+    }
+
 }
