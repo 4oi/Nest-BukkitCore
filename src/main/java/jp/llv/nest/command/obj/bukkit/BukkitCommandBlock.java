@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 toyblocks
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,40 +18,27 @@ package jp.llv.nest.command.obj.bukkit;
 
 import java.util.Optional;
 import jp.llv.nest.command.exceptions.TypeMismatchException;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.command.BlockCommandSender;
 
 /**
  *
  * @author toyblocks
  */
-public class BukkitPlayer extends BukkitCommandSender<Player> {
+public class BukkitCommandBlock extends BukkitCommandSender<BlockCommandSender>{
 
-    public BukkitPlayer(Player sender) {
+    public BukkitCommandBlock(BlockCommandSender sender) {
         super(sender);
-    }
-
-    public BukkitPlayer(String name) throws TypeMismatchException {
-        this(getPlayer(name));
     }
 
     @Override
     public <T> T to(Class<T> toClass) throws TypeMismatchException {
-        return super.to(toClass, ifClass(BukkitLocation.class, () -> new BukkitLocation(super.value.getLocation())));
-    }
-
-    private static Player getPlayer(String name) throws TypeMismatchException {
-        Player p = Bukkit.getPlayerExact(name);
-        if (p == null) {
-            throw new TypeMismatchException("Unknown player");
-        }
-        return p;
+        return super.to(toClass, ifClass(BukkitLocation.class, () -> new BukkitLocation(super.value.getBlock().getLocation())));
     }
 
     @Override
     public Optional<Location> getLocation() {
-        return Optional.of(super.value.getLocation());
+        return Optional.of(super.value.getBlock().getLocation());
     }
-
+    
 }

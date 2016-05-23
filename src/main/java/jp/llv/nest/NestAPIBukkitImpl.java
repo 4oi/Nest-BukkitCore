@@ -22,14 +22,18 @@ import jp.llv.nest.command.SyncCommandExecutor;
 import jp.llv.nest.command.exceptions.CommandException;
 import jp.llv.nest.command.exceptions.InternalException;
 import jp.llv.nest.command.obj.NestObject;
+import jp.llv.nest.command.obj.bukkit.BukkitCommandBlock;
+import jp.llv.nest.command.obj.bukkit.BukkitCommandBlockMinecart;
 import jp.llv.nest.command.obj.bukkit.BukkitCommandSender;
 import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.command.obj.bukkit.BukkitPlayer;
 import jp.llv.nest.command.token.CommandTokenizer;
 import org.bukkit.ChatColor;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.CommandMinecart;
 
 /**
  *
@@ -61,6 +65,10 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
             s = new BukkitPlayer((Player) sender);
         } else if (sender instanceof ConsoleCommandSender) {
             s = BukkitConsole.getInstance();
+        } else if (sender instanceof BlockCommandSender) {
+            s = new BukkitCommandBlock((BlockCommandSender) sender);
+        } else if (sender instanceof CommandMinecart) {
+            s = new BukkitCommandBlockMinecart((CommandMinecart) sender);
         } else {
             throw new IllegalArgumentException("Unsupported sender type");
         }
