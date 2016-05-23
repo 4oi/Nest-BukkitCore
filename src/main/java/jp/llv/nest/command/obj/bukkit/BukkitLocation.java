@@ -27,8 +27,6 @@ import org.bukkit.block.Block;
  */
 public class BukkitLocation extends NestValueAdapter<Location> {
     
-    private Location value;
-    
     public BukkitLocation(Location e) {
         super(e);
     }
