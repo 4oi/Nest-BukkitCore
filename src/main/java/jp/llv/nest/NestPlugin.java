@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import jp.llv.nest.command.exceptions.CommandException;
+import jp.llv.nest.command.obj.NestPermitter;
 import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.listener.ChatListener;
 import jp.llv.nest.listener.CommandListener;
@@ -98,7 +99,7 @@ public class NestPlugin extends JavaPlugin {
                 new InputStreamReader(
                         new FileInputStream(new File(this.getDataFolder(), "config.st")), "UTF-8"
                 ))) {
-            this.api.execute(BukkitConsole.getInstance(), br.lines().collect(Collectors.joining("\n")))
+            this.api.execute(NestPermitter.SUPERUSER, BukkitConsole.getInstance(), br.lines().collect(Collectors.joining("\n")))
                     .get();
         } catch (IOException ex) {
             this.getLogger().log(Level.WARNING, "Failed to load initialize command file", ex);

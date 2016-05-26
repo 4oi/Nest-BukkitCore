@@ -73,7 +73,7 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
             throw new IllegalArgumentException("Unsupported sender type");
         }
         try {
-            NestObject<?> res = this.executeNow(s, command);
+            NestObject<?> res = this.executeNow(s, s, command);
             sender.sendMessage(ChatColor.GRAY+"-> "+(res==null? "nil" : res.toString()));
         } catch(CommandException ex) {
             sender.sendMessage(ChatColor.RED+ex.getMessage());
