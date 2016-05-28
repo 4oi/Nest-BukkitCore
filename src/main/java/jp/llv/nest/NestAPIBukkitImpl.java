@@ -18,6 +18,7 @@ package jp.llv.nest;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jp.llv.nest.command.CommandExecutor;
 import jp.llv.nest.command.SyncCommandExecutor;
 import jp.llv.nest.command.exceptions.CommandException;
 import jp.llv.nest.command.exceptions.InternalException;
@@ -40,16 +41,20 @@ import org.bukkit.entity.minecart.CommandMinecart;
  * @author toyblocks
  */
 public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
-    
-    private final NestPlugin plugin;
 
-    public NestAPIBukkitImpl(NestPlugin plugin) {
+    private final NestPlugin plugin;
+    private final CommandExecutor executor;
+    private final boolean debug;
+
+    public NestAPIBukkitImpl(NestPlugin plugin, CommandExecutor executor, boolean debug) {
         super(new CommandTokenizer(), new SyncCommandExecutor());
         this.plugin = plugin;
+        this.executor = executor;
+        this.debug = debug;
     }
-    
+
     @Override
-    public String getVersion () {
+    public String getVersion() {
         return this.plugin.getDescription().getVersion();
     }
 
@@ -73,14 +78,20 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
             throw new IllegalArgumentException("Unsupported sender type");
         }
         try {
+            this.plugin.getLogger().log(Level.INFO, "{0} has executed command ''{1}''", new Object[]{sender.getName(), command});
             NestObject<?> res = this.executeNow(s, s, command);
-            sender.sendMessage(ChatColor.GRAY+"-> "+(res==null? "nil" : res.toString()));
-        } catch(CommandException ex) {
-            sender.sendMessage(ChatColor.RED+ex.getMessage());
-            if (this.plugin.isDebugMode() || ex instanceof InternalException) {
+            if (this.debug) {
+                sender.sendMessage(ChatColor.GRAY + "-> " + (res == null ? "nil" : res.toString()));
+            }
+        } catch (InternalException ex) {
+            sender.sendMessage(ChatColor.RED + ex.getMessage());
+            this.plugin.getLogger().log(Level.WARNING, ex.getMessage(), ex);
+        } catch (CommandException ex) {
+            sender.sendMessage(ChatColor.RED + ex.getMessage());
+            if (this.debug) {
                 this.plugin.getLogger().log(Level.WARNING, ex.getMessage(), ex);
             }
         }
     }
-    
+
 }

@@ -1,5 +1,14 @@
 # '/' to completely replace vanilla command
 # '/n:' to use nest command with '/n:command'
 # ':' to use nest command with ':command'
-
 prefix: ':'
+
+# async to execute command asynchronously
+# sync to execute command synchronously
+#executor: 'sync'
+executor: 'async'
+
+# if true, followed information will be displayed;
+# function return vakue of executed command
+# stack trace of expected exception
+debug: true

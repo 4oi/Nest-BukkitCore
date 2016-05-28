@@ -24,6 +24,9 @@ import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import jp.llv.nest.command.AsyncCommandExecutor;
+import jp.llv.nest.command.CommandExecutor;
+import jp.llv.nest.command.SyncCommandExecutor;
 import jp.llv.nest.command.exceptions.CommandException;
 import jp.llv.nest.command.obj.NestPermitter;
 import jp.llv.nest.command.obj.bukkit.BukkitConsole;
@@ -46,17 +49,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class NestPlugin extends JavaPlugin {
 
     private String prefix = "/n:";
+    private boolean debug = false;
+    private CommandExecutor executor = AsyncCommandExecutor.getInstance();
+    
     private NestAPIBukkitImpl api;
     private ModuleManager modules;
-    private boolean debug = true;
 
     @Override
     public void onEnable() {
-        this.api = new NestAPIBukkitImpl(this);
-
         this.saveDefaultConfig();
         Configuration config = this.getConfig();
         this.prefix = config.getString("prefix", this.prefix);
+        this.debug = config.getBoolean("debug", this.debug);
+        this.executor = config.getString("executor", "async").equalsIgnoreCase("async") ? AsyncCommandExecutor.getInstance() : SyncCommandExecutor.getInstance();
+        
+        this.api = new NestAPIBukkitImpl(this, this.executor, this.debug);
 
         this.modules = new SimpleModuleManager(this.api);
         this.modules.setDependable(this.api);
