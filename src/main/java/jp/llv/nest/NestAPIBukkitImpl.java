@@ -43,13 +43,11 @@ import org.bukkit.entity.minecart.CommandMinecart;
 public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
 
     private final NestPlugin plugin;
-    private final CommandExecutor executor;
     private final boolean debug;
 
     public NestAPIBukkitImpl(NestPlugin plugin, CommandExecutor executor, boolean debug) {
-        super(new CommandTokenizer(), new SyncCommandExecutor());
+        super(new CommandTokenizer(), executor);
         this.plugin = plugin;
-        this.executor = executor;
         this.debug = debug;
     }
 
