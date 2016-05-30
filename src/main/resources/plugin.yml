@@ -5,3 +5,8 @@ version: ${project.version}
 description: ${project.description}
 
 main: jp.llv.nest.NestPlugin
+
+commands:
+  nest:
+    description: execute nest command
+    usage: /nest <command>

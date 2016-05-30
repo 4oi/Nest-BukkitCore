@@ -38,6 +38,8 @@ import jp.llv.nest.module.InvalidModuleException;
 import jp.llv.nest.module.ModuleManager;
 import jp.llv.nest.module.SimpleModuleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -78,6 +80,12 @@ public class NestPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         this.api = null;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        this.api.executeNow(sender, String.join(" ", args));
+        return true;
     }
 
     public NestAPIBukkit getAPI() {
