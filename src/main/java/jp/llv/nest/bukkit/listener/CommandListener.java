@@ -14,34 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.llv.nest.listener;
+package jp.llv.nest.bukkit.listener;
 
 import jp.llv.nest.NestPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  *
  * @author toyblocks
  */
-public class ChatListener implements Listener {
+public class CommandListener implements Listener {
     
     private final NestPlugin plugin;
     private final String prefix;
 
-    public ChatListener(NestPlugin plugin, String prefix) {
+    public CommandListener(NestPlugin plugin, String prefix) {
         this.plugin = plugin;
         this.prefix = prefix;
     }
     
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on(AsyncPlayerChatEvent eve) {
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void on(PlayerCommandPreprocessEvent eve) {
         if (eve.getMessage().startsWith(prefix)) {
             this.plugin.getAPI().executeNow(eve.getPlayer(), eve.getMessage().replaceFirst(prefix, ""));
             eve.setCancelled(true);
         }
     }
-    
+     
 }
