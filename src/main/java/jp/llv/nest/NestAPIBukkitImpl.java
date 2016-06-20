@@ -17,9 +17,7 @@
 package jp.llv.nest;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import jp.llv.nest.command.CommandExecutor;
-import jp.llv.nest.command.SyncCommandExecutor;
 import jp.llv.nest.command.exceptions.CommandException;
 import jp.llv.nest.command.exceptions.InternalException;
 import jp.llv.nest.command.obj.NestObject;
@@ -35,6 +33,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,7 +58,7 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
 
     @Override
     public Logger getLogger() {
-        return this.plugin.getLogger();
+        return LoggerFactory.getLogger(this.plugin.getLogger().getClass());
     }
 
     @Override
