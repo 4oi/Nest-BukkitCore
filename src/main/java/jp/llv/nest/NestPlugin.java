@@ -16,6 +16,7 @@
  */
 package jp.llv.nest;
 
+import com.google.inject.AbstractModule;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,11 +34,10 @@ import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.bukkit.listener.ChatListener;
 import jp.llv.nest.bukkit.listener.CommandListener;
 import jp.llv.nest.bukkit.listener.ConsoleListener;
-import jp.llv.nest.module.DependencyException;
-import jp.llv.nest.module.InvalidModuleException;
+import jp.llv.nest.module.JarModuleManager;
 import jp.llv.nest.module.ModuleManager;
-import jp.llv.nest.module.SimpleModuleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
@@ -53,7 +53,7 @@ public class NestPlugin extends JavaPlugin {
     private String prefix = "/n:";
     private boolean debug = false;
     private CommandExecutor executor = AsyncCommandExecutor.getInstance();
-    
+
     private NestAPIBukkitImpl api;
     private ModuleManager modules;
 
@@ -64,16 +64,19 @@ public class NestPlugin extends JavaPlugin {
         this.prefix = config.getString("prefix", this.prefix);
         this.debug = config.getBoolean("debug", this.debug);
         this.executor = config.getString("executor", "async").equalsIgnoreCase("async") ? AsyncCommandExecutor.getInstance() : SyncCommandExecutor.getInstance();
-        
+
         this.api = new NestAPIBukkitImpl(this, this.executor, this.debug);
 
-        this.modules = new SimpleModuleManager(this.api);
-        this.modules.setDependable(this.api);
-        this.modules.setDependable(Bukkit.getServer());
-        this.modules.setDependable(this);
+        this.modules = new JarModuleManager(this.api, new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(Server.class).toInstance(Bukkit.getServer());
+                bind(NestPlugin.class).toInstance(NestPlugin.this);
+            }
+        });
 
         this.saveResource("config.st", false);
-        
+
         this.getServer().getScheduler().runTaskLater(this, this::init, 1L);
     }
 
@@ -95,21 +98,31 @@ public class NestPlugin extends JavaPlugin {
     public boolean isDebugMode() {
         return this.debug;
     }
-    
+
     public void init() {
-        for (Plugin plugin : this.getServer().getPluginManager().getPlugins()) {
-            this.modules.setDependable(plugin);
+        this.modules.getInjector().createChildInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                for (Plugin plugin : NestPlugin.this.getServer().getPluginManager().getPlugins()) {
+                    bind((Class) plugin.getClass()).toInstance(plugin);
+                }
+            }
+        }, new AbstractModule() {
+            @Override
+            protected void configure() {
+                NestPlugin.this.getServer().getServicesManager().getKnownServices().stream().forEach(sc
+                        -> bind((Class) sc).toInstance(NestPlugin.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
+            }
+        });
+
+        for (File f : this.getDataFolder().listFiles()) {
+            try {
+                this.modules.load(f.toPath());
+            } catch (IOException ex) {
+                this.getLogger().log(Level.WARNING, "Failed to load module \"" + f.getName() + "\"", ex);
+            }
         }
-        for (Class<?> serviceClass : this.getServer().getServicesManager().getKnownServices()) {
-            this.modules.setDependable(this.getServer().getServicesManager().getRegistration(serviceClass).getProvider());
-        }
-        
-        try {
-            this.modules.load(this.getDataFolder().listFiles());
-        } catch (IOException | InvalidModuleException | DependencyException ex) {
-            this.getLogger().log(Level.WARNING, "Failed to load modules", ex);
-        }
-        
+
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(new File(this.getDataFolder(), "config.st")), "UTF-8"
