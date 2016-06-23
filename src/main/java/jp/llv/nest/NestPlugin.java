@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.bukkit.listener.ChatListener;
 import jp.llv.nest.bukkit.listener.CommandListener;
 import jp.llv.nest.bukkit.listener.ConsoleListener;
+import jp.llv.nest.module.DynInjector;
 import jp.llv.nest.module.JarModuleManager;
 import jp.llv.nest.module.ModuleManager;
 import org.bukkit.Bukkit;
@@ -41,7 +43,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -70,8 +72,8 @@ public class NestPlugin extends JavaPlugin {
         this.modules = new JarModuleManager(this.api, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(Server.class).toInstance(Bukkit.getServer());
-                bind(NestPlugin.class).toInstance(NestPlugin.this);
+                bind(Server.class).toInstance(NestPlugin.this.getServer());
+                bind(PluginManager.class).toInstance(NestPlugin.this.getServer().getPluginManager());
             }
         });
 
@@ -103,15 +105,16 @@ public class NestPlugin extends JavaPlugin {
         this.modules.getInjector().createChildInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                for (Plugin plugin : NestPlugin.this.getServer().getPluginManager().getPlugins()) {
-                    bind((Class) plugin.getClass()).toInstance(plugin);
-                }
+                Arrays.stream(NestPlugin.this.getServer().getPluginManager().getPlugins())
+                        .filter(p -> DynInjector.isSafe(p.getClass()))
+                        .forEach(p -> bind((Class) p.getClass()).toProvider(() -> p));
             }
         }, new AbstractModule() {
             @Override
             protected void configure() {
-                NestPlugin.this.getServer().getServicesManager().getKnownServices().stream().forEach(sc
-                        -> bind((Class) sc).toInstance(NestPlugin.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
+                NestPlugin.this.getServer().getServicesManager().getKnownServices().stream()
+                        .filter(DynInjector::isSafe)
+                        .forEach(sc -> bind((Class) sc).toProvider(() -> NestPlugin.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
             }
         });
 
