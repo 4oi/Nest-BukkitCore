@@ -38,7 +38,6 @@ import jp.llv.nest.bukkit.listener.ConsoleListener;
 import jp.llv.nest.module.DynInjector;
 import jp.llv.nest.module.JarModuleManager;
 import jp.llv.nest.module.ModuleManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -119,6 +118,9 @@ public class NestPlugin extends JavaPlugin {
         });
 
         for (File f : this.getDataFolder().listFiles()) {
+            if (!f.getName().endsWith(".jar")) {
+                continue;
+            }
             try {
                 this.modules.load(f.toPath());
             } catch (IOException ex) {
