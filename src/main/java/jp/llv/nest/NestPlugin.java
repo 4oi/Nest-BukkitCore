@@ -51,7 +51,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class NestPlugin extends JavaPlugin {
 
-    private String prefix = "/n:";
+    private String prefix = ":";
     private boolean debug = false;
     private CommandExecutor executor = AsyncCommandExecutor.getInstance();
 
