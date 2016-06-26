@@ -16,6 +16,7 @@
  */
 package jp.llv.nest.command.obj.bukkit;
 
+import jp.llv.nest.command.Type;
 import jp.llv.nest.command.obj.NestValueAdapter;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,6 +26,7 @@ import org.bukkit.block.Block;
  *
  * @author toyblocks
  */
+@Type("Location")
 public class BukkitLocation extends NestValueAdapter<Location> {
     
     public BukkitLocation(Location e) {

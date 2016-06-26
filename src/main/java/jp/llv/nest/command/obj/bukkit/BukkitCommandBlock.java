@@ -17,6 +17,7 @@
 package jp.llv.nest.command.obj.bukkit;
 
 import java.util.Optional;
+import jp.llv.nest.command.Type;
 import jp.llv.nest.command.exceptions.TypeMismatchException;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -25,6 +26,7 @@ import org.bukkit.command.BlockCommandSender;
  *
  * @author toyblocks
  */
+@Type("CommandBlock")
 public class BukkitCommandBlock extends BukkitCommandSender<BlockCommandSender>{
 
     public BukkitCommandBlock(BlockCommandSender sender) {

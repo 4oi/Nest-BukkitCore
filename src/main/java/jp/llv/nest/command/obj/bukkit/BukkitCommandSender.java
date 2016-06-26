@@ -17,6 +17,7 @@
 package jp.llv.nest.command.obj.bukkit;
 
 import java.util.Optional;
+import jp.llv.nest.command.Type;
 import jp.llv.nest.command.obj.NestCommandSender;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -25,6 +26,7 @@ import org.bukkit.command.CommandSender;
  *
  * @author toyblocks
  */
+@Type("BukkitUser")
 public abstract class BukkitCommandSender<E extends CommandSender> extends NestCommandSender<E> {
 
     public static String PERM_PREFIX = "nest.";

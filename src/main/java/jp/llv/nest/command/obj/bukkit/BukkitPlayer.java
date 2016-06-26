@@ -17,6 +17,7 @@
 package jp.llv.nest.command.obj.bukkit;
 
 import java.util.Optional;
+import jp.llv.nest.command.Type;
 import jp.llv.nest.command.exceptions.TypeMismatchException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,6 +27,7 @@ import org.bukkit.entity.Player;
  *
  * @author toyblocks
  */
+@Type("Player")
 public class BukkitPlayer extends BukkitCommandSender<Player> {
 
     public BukkitPlayer(Player sender) {
