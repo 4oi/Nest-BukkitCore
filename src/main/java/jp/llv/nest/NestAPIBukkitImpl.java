@@ -16,6 +16,7 @@
  */
 package jp.llv.nest;
 
+import java.nio.file.Path;
 import java.util.logging.Level;
 import jp.llv.nest.command.CommandExecutor;
 import jp.llv.nest.command.exceptions.CommandException;
@@ -61,6 +62,11 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
     public Logger getLogger() {
         SLF4JBridgeHandler.install();
         return LoggerFactory.getLogger(this.plugin.getLogger().getClass());
+    }
+
+    @Override
+    public Path getDataFolder() {
+        return this.plugin.getDataFolder().toPath();
     }
 
     @Override
