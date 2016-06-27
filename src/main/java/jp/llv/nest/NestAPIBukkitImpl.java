@@ -35,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  *
@@ -58,6 +59,7 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
 
     @Override
     public Logger getLogger() {
+        SLF4JBridgeHandler.install();
         return LoggerFactory.getLogger(this.plugin.getLogger().getClass());
     }
 
