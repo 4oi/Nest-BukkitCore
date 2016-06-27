@@ -66,6 +66,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>nest-bukkit-api</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>nest-core</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
