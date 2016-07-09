@@ -35,8 +35,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  *
@@ -45,6 +43,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
 
     private final NestPlugin plugin;
+    private Logger logger;
     private final boolean debug;
 
     public NestAPIBukkitImpl(NestPlugin plugin, CommandExecutor executor, boolean debug) {
@@ -60,8 +59,16 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
 
     @Override
     public Logger getLogger() {
-        SLF4JBridgeHandler.install();
-        return LoggerFactory.getLogger(this.plugin.getLogger().getClass());
+        if (logger != null) {
+            return logger;
+        }
+        try {
+            return (this.logger = org.slf4j.impl.JDK14LoggerAdapter.class
+                    .getConstructor(java.util.logging.Logger.class)
+                    .newInstance(logger));
+        } catch(ReflectiveOperationException ex) {
+            return null;
+        }
     }
 
     @Override
