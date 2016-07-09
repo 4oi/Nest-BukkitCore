@@ -35,6 +35,9 @@ import jp.llv.nest.command.obj.bukkit.BukkitConsole;
 import jp.llv.nest.bukkit.listener.ChatListener;
 import jp.llv.nest.bukkit.listener.CommandListener;
 import jp.llv.nest.bukkit.listener.ConsoleListener;
+import jp.llv.nest.i18n.ConfigMessageProvider;
+import jp.llv.nest.i18n.I18n;
+import jp.llv.nest.module.ConfigManagerImpl;
 import jp.llv.nest.module.DynInjector;
 import jp.llv.nest.module.JarModuleManager;
 import jp.llv.nest.module.ModuleManager;
@@ -67,6 +70,13 @@ public class NestPlugin extends JavaPlugin {
         this.executor = config.getString("executor", "async").equalsIgnoreCase("async") ? AsyncCommandExecutor.getInstance() : SyncCommandExecutor.getInstance();
 
         this.api = new NestAPIBukkitImpl(this, this.executor, this.debug);
+        try {
+            I18n.setProvider("nest", new ConfigMessageProvider(new ConfigManagerImpl(this.getDataFolder(), this.getClass()).getConfig("messages.conf")));
+        } catch (IOException ex) {
+            this.getLogger().warning("Failed to load messages configuration!");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
         this.modules = new JarModuleManager(this.api, new AbstractModule() {
             @Override
