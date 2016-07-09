@@ -16,6 +16,7 @@
  */
 package jp.llv.nest;
 
+import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.util.logging.Level;
 import jp.llv.nest.command.CommandExecutor;
@@ -63,10 +64,12 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
             return logger;
         }
         try {
-            return (this.logger = org.slf4j.impl.JDK14LoggerAdapter.class
-                    .getConstructor(java.util.logging.Logger.class)
-                    .newInstance(logger));
-        } catch(ReflectiveOperationException ex) {
+            Constructor<? extends Logger> constructor = org.slf4j.impl.JDK14LoggerAdapter.class
+                    .getDeclaredConstructor(java.util.logging.Logger.class);
+            constructor.setAccessible(true);
+            return (this.logger = constructor.newInstance(this.plugin.getLogger()));
+        } catch (ReflectiveOperationException ex) {
+            this.plugin.getLogger().log(Level.WARNING, "Failed to adapt logger", ex);
             return null;
         }
     }
