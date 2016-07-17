@@ -43,11 +43,11 @@ import org.slf4j.Logger;
  */
 public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
 
-    private final NestPlugin plugin;
+    private final NestPluginImpl plugin;
     private Logger logger;
     private final boolean debug;
 
-    public NestAPIBukkitImpl(NestPlugin plugin, CommandExecutor executor, boolean debug) {
+    public NestAPIBukkitImpl(NestPluginImpl plugin, CommandExecutor executor, boolean debug) {
         super(new CommandTokenizer(), executor);
         this.plugin = plugin;
         this.debug = debug;

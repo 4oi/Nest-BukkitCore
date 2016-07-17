@@ -52,7 +52,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author toyblocks
  */
-public class NestPlugin extends JavaPlugin {
+public class NestPluginImpl extends JavaPlugin implements NestPlugin {
 
     private String prefix = ":";
     private boolean debug = false;
@@ -81,8 +81,9 @@ public class NestPlugin extends JavaPlugin {
         this.modules = new JarModuleManager(this.api, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(Server.class).toInstance(NestPlugin.this.getServer());
-                bind(PluginManager.class).toInstance(NestPlugin.this.getServer().getPluginManager());
+                bind(Server.class).toInstance(NestPluginImpl.this.getServer());
+                bind(PluginManager.class).toInstance(NestPluginImpl.this.getServer().getPluginManager());
+                bind(NestPlugin.class).toInstance(NestPluginImpl.this);
             }
         });
 
@@ -114,16 +115,16 @@ public class NestPlugin extends JavaPlugin {
         this.modules.getInjector().createChildInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                Arrays.stream(NestPlugin.this.getServer().getPluginManager().getPlugins())
+                Arrays.stream(NestPluginImpl.this.getServer().getPluginManager().getPlugins())
                         .filter(p -> DynInjector.isSafe(p.getClass()))
                         .forEach(p -> bind((Class) p.getClass()).toProvider(() -> p));
             }
         }, new AbstractModule() {
             @Override
             protected void configure() {
-                NestPlugin.this.getServer().getServicesManager().getKnownServices().stream()
+                NestPluginImpl.this.getServer().getServicesManager().getKnownServices().stream()
                         .filter(DynInjector::isSafe)
-                        .forEach(sc -> bind((Class) sc).toProvider(() -> NestPlugin.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
+                        .forEach(sc -> bind((Class) sc).toProvider(() -> NestPluginImpl.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
             }
         });
 
