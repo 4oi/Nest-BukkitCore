@@ -16,7 +16,7 @@
  */
 package jp.llv.nest.bukkit.listener;
 
-import jp.llv.nest.NestPluginImpl;
+import jp.llv.nest.NestBukkitPluginImpl;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,10 +28,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
  */
 public class CommandListener implements Listener {
     
-    private final NestPluginImpl plugin;
+    private final NestBukkitPluginImpl plugin;
     private final String prefix;
 
-    public CommandListener(NestPluginImpl plugin, String prefix) {
+    public CommandListener(NestBukkitPluginImpl plugin, String prefix) {
         this.plugin = plugin;
         this.prefix = prefix;
     }

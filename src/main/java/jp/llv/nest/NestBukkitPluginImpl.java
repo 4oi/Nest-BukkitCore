@@ -52,7 +52,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author toyblocks
  */
-public class NestPluginImpl extends JavaPlugin implements NestPlugin {
+public class NestBukkitPluginImpl extends JavaPlugin implements NestBukkitPlugin {
 
     private String prefix = ":";
     private boolean debug = false;
@@ -81,9 +81,9 @@ public class NestPluginImpl extends JavaPlugin implements NestPlugin {
         this.modules = new JarModuleManager(this.api, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(Server.class).toInstance(NestPluginImpl.this.getServer());
-                bind(PluginManager.class).toInstance(NestPluginImpl.this.getServer().getPluginManager());
-                bind(NestPlugin.class).toInstance(NestPluginImpl.this);
+                bind(Server.class).toInstance(NestBukkitPluginImpl.this.getServer());
+                bind(PluginManager.class).toInstance(NestBukkitPluginImpl.this.getServer().getPluginManager());
+                bind(NestBukkitPlugin.class).toInstance(NestBukkitPluginImpl.this);
             }
         });
 
@@ -115,16 +115,16 @@ public class NestPluginImpl extends JavaPlugin implements NestPlugin {
         this.modules.getInjector().createChildInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                Arrays.stream(NestPluginImpl.this.getServer().getPluginManager().getPlugins())
+                Arrays.stream(NestBukkitPluginImpl.this.getServer().getPluginManager().getPlugins())
                         .filter(p -> DynInjector.isSafe(p.getClass()))
                         .forEach(p -> bind((Class) p.getClass()).toProvider(() -> p));
             }
         }, new AbstractModule() {
             @Override
             protected void configure() {
-                NestPluginImpl.this.getServer().getServicesManager().getKnownServices().stream()
+                NestBukkitPluginImpl.this.getServer().getServicesManager().getKnownServices().stream()
                         .filter(DynInjector::isSafe)
-                        .forEach(sc -> bind((Class) sc).toProvider(() -> NestPluginImpl.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
+                        .forEach(sc -> bind((Class) sc).toProvider(() -> NestBukkitPluginImpl.this.getServer().getServicesManager().getRegistration(sc).getProvider()));
             }
         });
 
