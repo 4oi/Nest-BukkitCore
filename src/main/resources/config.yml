@@ -8,7 +8,5 @@ prefix: ':'
 #executor: 'sync'
 executor: 'async'
 
-# if true, followed information will be displayed;
-# function return vakue of executed command
-# stack trace of expected exception
-debug: true
+# enable debug mode only if you are developer and developing a nest module
+debug: false

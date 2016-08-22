@@ -50,6 +50,7 @@ public class NestAPIBukkitImpl extends NestAPIImpl implements NestAPIBukkit {
     public NestAPIBukkitImpl(NestBukkitPluginImpl plugin, CommandExecutor executor, boolean debug) {
         super(new CommandTokenizer(), executor);
         this.plugin = plugin;
+        this.plugin.getLogger().setLevel(debug ? Level.ALL : Level.FINEST);
         this.debug = debug;
     }
 
